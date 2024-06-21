@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Plant Image</title>
+</head>
+<body>
+    <h1>Upload Plant Image</h1>
+    <form id="uploadForm">
+        <input type="file" id="imageInput" name="image" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="result"></div>
+    <img id="annotatedImage" src="" alt="Annotated Image" style="display:none;"/>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const imageFile = document.getElementById('imageInput').files[0];
+            formData.append('image', imageFile);
+            console.log("Uploading image...");
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/process_image', {
+                    method: 'POST',
+                    body: formData
+                });
+                console.log("Fetch response:", response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log("Response received", result);
+
+                // Display the result
+                document.getElementById('result').innerText = `Plant Height: ${result.plant_height_inches} inches`;
+
+                // Display the annotated image
+                const annotatedImage = document.getElementById('annotatedImage');
+                annotatedImage.src = `http://127.0.0.1:5000${result.annotated_image_url}`;
+                annotatedImage.style.display = 'block';
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('result').innerText = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

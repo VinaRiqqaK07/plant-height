@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    <input type="file" id="imageFile">
+    <button onclick="uploadImage()">Upload</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function uploadImage() {
+            const fileInput = document.getElementById('imageFile');
+            const file = fileInput.files[0];
+            
+            const formData = new FormData();
+            formData.append('image', file);
+
+            axios.post('http://127.0.0.1:5000/process_image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                console.log('Response:', response.data);
+
+                // Contoh menampilkan tinggi tanaman
+                const plantHeight = response.data.plant_height_inches;
+                alert(`Plant Height: ${plantHeight} inches`);
+
+                // Contoh menampilkan gambar yang telah dianotasi
+                const annotatedImagePath = response.data.annotated_image_url;
+                const imgElement = document.createElement('img');
+                imgElement.src = annotatedImagePath;
+                document.body.appendChild(imgElement);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to upload image.');
+            });
+        }
+    </script>
+</body>
+</html>
