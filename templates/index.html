@@ -2,16 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload Plant Image</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <title>Plant Height Detector</title>
 </head>
 <body>
-    <h1>Upload Plant Image</h1>
-    <form id="uploadForm">
-        <input type="file" id="imageInput" name="image" accept="image/*" required>
-        <button type="submit">Upload</button>
-    </form>
-    <div id="result"></div>
-    <img id="annotatedImage" src="" alt="Annotated Image" style="display:none;"/>
+    <header class="web-title">
+        <h1>Plant Height Detector</h1>
+    </header>
+    <main class="web-content">
+        <div class="input-image">
+            <h2 class="sub-title">Upload Plant Image</h2>
+            <form id="uploadForm" class="upload-form">
+                <div id="dropZone" class="drop-zone">
+                    <p>Drag & drop your file here <br/>or</p>
+                    <label for="imageInput" class="chooseFile-button">Choose File</label>
+                    <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;" required>
+                </div>
+                <div id="fileName" style="display:none;"></div>
+                <button type="submit" id="uploadButton" class="upload-button">Upload</button>
+            </form>
+        </div>
+        <div class="image-result">
+            <h2 class="sub-title">Result</h2>
+            <div id="result"></div>
+            <img id="annotatedImage" src="" alt="Annotated Image" style="display:none;">
+        </div>
+    </main>
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
@@ -47,6 +63,13 @@
                 document.getElementById('result').innerText = `Error: ${error.message}`;
             }
         });
+
+        document.getElementById('imageInput').addEventListener('change', function() {
+            const fileName = document.getElementById('imageInput').files[0].name;
+            document.getElementById('fileName').innerText = `Selected File: ${fileName}`;
+            document.getElementById('fileName').style.display = 'block'; 
+        });
+
     </script>
 </body>
 </html>
